@@ -1,0 +1,23 @@
+
+
+.todoButton {
+  background: dodgerblue;
+  color: white;
+  padding: 5px;
+  transition: background-color;
+  border: none;
+  border-radius: 5px;
+  &:hover {
+    background: #1371ce;
+    cursor: pointer;
+  }
+}
+
+.buttonsWrap {
+  display: flex;
+  gap: 10px;
+}
+
+.todoList {
+  list-style: none;
+}
