@@ -1,58 +1,67 @@
 import React, {FC} from "react";
 import styles from "./Todo.module.scss";
 
-import {ChildTodos, removeTodo, removeChildTodos, selectChildTodos, selectTodos} from "../../store/slices/todoSlice";
+import {Id, Task} from "../../service/Interfaces";
 import Todo from "./Todo";
-import {useDispatch, useSelector} from "react-redux";
-import todo from "./Todo";
+import {useDeleteTaskMutation, useDeleteTodoByIdMutation} from "../../service/TodoService";
 
 
-interface TodoListProps {
-    id: number;
+
+interface TasksListProps {
+    id: Id,
+    tasks: Task[];
 }
 
-export const TodoList: FC<TodoListProps> = ({id}) => {
-    const dispatch = useDispatch();
-    const todos = useSelector(selectTodos(id))
-    if (!todos) {
-        return (
-            <p>
+export const TasksList: FC<TasksListProps> = ({tasks, id}) => {
+    const [deleteTask] = useDeleteTaskMutation();
 
-            </p>
-        )
+    const handleRemoveTask = async (index: number) => {
+        await deleteTask({todoId: id, taskIndex: index});
     }
+
     return (
-        <ul className={styles.todoList}>
-            {
-                todos.map((todo, index) => (
-                    <li key={index} className={"flex justify-center py-2"}>
-                        <span>{todo}</span>
-                        <button onClick={() => dispatch(removeTodo({id, strIndex: index}))}
-                                className={"bg-red-500 hover:bg-red-600 transition-colors p-2 rounded-lg ml-2"}>
-                            Remove
-                        </button>
-                    </li>
-                ))
-            }
+        <ul className={`bg-slate-200 rounded-lg ${tasks.length && `p-5 mt-5`} w-full`}>
+            {tasks.map((task, index) => (
+                <li key={index} className={"flex justify-between w-full items-center mt-2 "}>
+                    <span>{task}</span>
+                    <button onClick={()=> handleRemoveTask(index)}
+                        className={"ml-2 bg-red-500 rounded-lg p-1"}>
+                    Remove
+                </button>
+                </li>
+            ))}
+
         </ul>
     )
 }
 
-export const ChildTodosList: FC<TodoListProps> = ({id}) => {
-    const dispatch = useDispatch();
-    const childTodos = useSelector(selectChildTodos(id));
+interface TodoListProps {
+    id: Id,
+    childrenId: Id[];
+}
+
+export const ChildTodosList: FC<TodoListProps> = ({childrenId, id}) => {
+
+    const [removeTodo] = useDeleteTodoByIdMutation();
+
+    const handleRemoveTodo = async (id: Id, parentId: Id) => {
+        await removeTodo({id, parentId});
+    }
 
 
     return (
-        <ul>
+        <ul className={"flex flex-col w-full justify-around gap-x-5"}>
             {
-                childTodos.map((subTodo, index) => (
-                    <li key={index} className={"flex justify-around items-center gap-x-5"}>
-                        <button onClick={() => dispatch(removeChildTodos({id: index}))}
-                                className={"bg-red-500 hover:bg-red-400 transition-colors p-2 rounded-lg mt-2"}>
-                            Remove Todo
-                        </button>
-                        <Todo id={subTodo.id} />
+                childrenId.map((todoId)=> (
+                    <li key={todoId} className={"flex flex-col justify-center items-center"}>
+                        <div className={"bg-slate-500 rounded-lg px-2 py-3 border border-slate-900 mt-5 flex flex-col items-center"}>
+                            <Todo id={todoId}/>
+                            <button className={"p-2 bg-red-500 rounded-lg"}
+                                    onClick={() => handleRemoveTodo(todoId, id)}>
+                                Remove todo {todoId}
+                            </button>
+                        </div>
+
                     </li>
                 ))
             }

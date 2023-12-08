@@ -1,11 +1,12 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {BaseQueryArg} from "@reduxjs/toolkit/dist/query/baseQueryTypes";
-import {Id, Task} from "../store/slices/todoSlice";
+import {Id, ITodo, Task} from "./Interfaces";
 
 interface AddTodoParams {
     parentId: Id;
     parentsId: Id[];
 }
+
 interface AddTaskParams {
     task: Task;
     todoId: Id;
@@ -16,47 +17,68 @@ interface RemoveTaskParams {
     todoId: Id;
 }
 
-
+interface DeleteTodoParams {
+    id: Id,
+    parentId: Id
+}
 
 export const todoApi = createApi({
     reducerPath: 'todoApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3000/todos'}),
+    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3001/todos'}),
+    tagTypes: ['Todo'],
     endpoints: (build) => ({
-        fetchAllTodos: build.query({
+        fetchAllTodos: build.query<ITodo[], void>({
             query: () => ({
                 url: '/'
-            })
+            }),
+            providesTags: ['Todo'],
         }),
-        addTodo: build.mutation({
-            query: ({parentsId, parentId}: AddTodoParams) => ({
+        addTodo: build.mutation<ITodo, AddTodoParams>({
+            query: ({parentId, parentsId,}: AddTodoParams) => ({
                 url: `/`,
                 method: 'POST',
                 body: {parentId, parentsId}
-            })
+            }),
+            invalidatesTags: ['Todo'],
         }),
-        fetchTodoById: build.query({
+        fetchTodoById: build.query<ITodo, Id>({
             query: (id: Id) => ({
-                url: `/:${id}`
-            })
+                url: `/${id}`
+            }),
+            providesTags: ['Todo'],
         }),
-        deleteTodoById: build.mutation({
-            query: (id: Id) => ({
-                url: `/:${id}`,
+        deleteTodoById: build.mutation<boolean, DeleteTodoParams>({
+            query: ({id, parentId}: DeleteTodoParams) => ({
+                url: `/${id}?parentId=${parentId}`,
                 method: 'DELETE'
-            })
+            }),
+            invalidatesTags: ['Todo'],
         }),
-        addTask: build.mutation({
-            query: ({todoId, task} : AddTaskParams) => ({
+        addTask: build.mutation<ITodo, AddTaskParams>({
+            query: ({todoId, task}: AddTaskParams) => ({
                 url: `/${todoId}/tasks`,
                 method: 'POST',
                 body: {task}
-            })
+            }),
+            invalidatesTags: ['Todo'],
         }),
-        removeTask: build.mutation({
+        deleteTask: build.mutation<ITodo, RemoveTaskParams>({
             query: ({todoId, taskIndex}: RemoveTaskParams) => ({
                 url: `/${todoId}/tasks?taskIndex=${taskIndex}`,
                 method: 'DELETE',
-            })
+            }),
+            invalidatesTags: ['Todo'],
         })
-    })
+    }),
 })
+
+export const {
+    useFetchAllTodosQuery,
+    useAddTaskMutation,
+    useAddTodoMutation,
+    useDeleteTodoByIdMutation,
+    useFetchTodoByIdQuery,
+    useDeleteTaskMutation
+} = todoApi
+
+
