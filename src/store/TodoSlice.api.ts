@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {BaseQueryArg} from "@reduxjs/toolkit/dist/query/baseQueryTypes";
-import {Id, ITodo, Task} from "./Interfaces";
+import {Id, ITodo, Task} from "../service/Interfaces";
 
 interface AddTodoParams {
     parentId: Id;

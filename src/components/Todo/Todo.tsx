@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FC, useState, memo} from 'react';
 import {TasksList, ChildTodosList} from "./Lists";
-import * as todoApi from "../../service/TodoService";
+import * as todoApi from "../../store/TodoSlice.api";
 import LoadingBlock from "../LoadingBlock/LoadingBlock";
 
 import styles from "./Todo.module.scss"

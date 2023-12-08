@@ -1,7 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
 import {compose} from "@reduxjs/toolkit";
-import {todoApi} from "../service/TodoService";
+import {todoApi} from "./TodoSlice.api";
 
 
 const store = configureStore({

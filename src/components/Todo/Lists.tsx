@@ -3,7 +3,7 @@ import styles from "./Todo.module.scss";
 
 import {Id, Task} from "../../service/Interfaces";
 import Todo from "./Todo";
-import {useDeleteTaskMutation, useDeleteTodoByIdMutation, useUpdateTaskMutation} from "../../service/TodoService";
+import {useDeleteTaskMutation, useDeleteTodoByIdMutation, useUpdateTaskMutation} from "../../store/TodoSlice.api";
 import TaskComponent from "./Task";
 
 
