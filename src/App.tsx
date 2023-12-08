@@ -23,7 +23,12 @@ function App() {
     return (
         <div className={"w-screen min-h-screen bg-gray-800  flex items-start justify-start p-2"}>
             <div className={"flex justify-center items-center w-full"}>
-                {isLoading ? <LoadingBlock/> : <Todo id={rootTodoId}/>}
+                {isLoading ? <LoadingBlock/>
+                    :
+                    <div className={"bg-slate-600 rounded-lg"}>
+                        <Todo id={rootTodoId}/>
+                    </div>
+                }
             </div>
         </div>
     );

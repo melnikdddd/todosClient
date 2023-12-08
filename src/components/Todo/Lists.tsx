@@ -3,7 +3,8 @@ import styles from "./Todo.module.scss";
 
 import {Id, Task} from "../../service/Interfaces";
 import Todo from "./Todo";
-import {useDeleteTaskMutation, useDeleteTodoByIdMutation} from "../../service/TodoService";
+import {useDeleteTaskMutation, useDeleteTodoByIdMutation, useUpdateTaskMutation} from "../../service/TodoService";
+import TaskComponent from "./Task";
 
 
 
@@ -14,20 +15,21 @@ interface TasksListProps {
 
 export const TasksList: FC<TasksListProps> = ({tasks, id}) => {
     const [deleteTask] = useDeleteTaskMutation();
+    const [updateTask] = useUpdateTaskMutation();
 
     const handleRemoveTask = async (index: number) => {
         await deleteTask({todoId: id, taskIndex: index});
     }
 
+    const handleUpdateTask = async (value: string, index: number) => {
+        await updateTask({todoId: id, taskIndex: index, task: value});
+    }
+
     return (
-        <ul className={`bg-slate-200 rounded-lg ${tasks.length && `p-5 mt-5`} w-full`}>
+        <ul className={`bg-slate-200 rounded-lg ${tasks.length && `p-5 mt-5`} w-full max-w-[430px]`}>
             {tasks.map((task, index) => (
-                <li key={index} className={"flex justify-between w-full items-center mt-2 "}>
-                    <span>{task}</span>
-                    <button onClick={()=> handleRemoveTask(index)}
-                        className={"ml-2 bg-red-500 rounded-lg p-1"}>
-                    Remove
-                </button>
+                <li key={index}>
+                  <TaskComponent task={task} index={index} handleRemoveTask={handleRemoveTask} handleUpdateTask={handleUpdateTask}/>
                 </li>
             ))}
 
@@ -56,7 +58,7 @@ export const ChildTodosList: FC<TodoListProps> = ({childrenId, id}) => {
                     <li key={todoId} className={"flex flex-col justify-center items-center"}>
                         <div className={"bg-slate-500 rounded-lg px-2 py-3 border border-slate-900 mt-5 flex flex-col items-center"}>
                             <Todo id={todoId}/>
-                            <button className={"p-2 bg-red-500 rounded-lg"}
+                            <button className={"p-2 bg-red-500 rounded-lg transition-colors hover:bg-red-600"}
                                     onClick={() => handleRemoveTodo(todoId, id)}>
                                 Remove todo {todoId}
                             </button>

@@ -12,3 +12,11 @@
 .todoList {
   list-style: none;
 }
+
+
+.taskEditButton{
+  @apply bg-blue-500 rounded-lg p-1 px-2 text-white transition-colors hover:bg-blue-600;
+}
+.taskSaveButton{
+  @apply bg-green-500 rounded-lg p-1 px-2 text-white transition-colors hover:bg-green-600 text-black;
+}

@@ -22,6 +22,12 @@ interface DeleteTodoParams {
     parentId: Id
 }
 
+interface UpdateTaskParams {
+    todoId: Id;
+    taskIndex: number;
+    task: Task;
+}
+
 export const todoApi = createApi({
     reducerPath: 'todoApi',
     baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3001/todos'}),
@@ -68,6 +74,14 @@ export const todoApi = createApi({
                 method: 'DELETE',
             }),
             invalidatesTags: ['Todo'],
+        }),
+        updateTask: build.mutation<ITodo, UpdateTaskParams>({
+            query: ({todoId, taskIndex, task}: UpdateTaskParams) => ({
+                url: `/${todoId}/tasks?taskIndex=${taskIndex}`,
+                method: 'PUT',
+                body: {task},
+            }),
+            invalidatesTags: ['Todo'],
         })
     }),
 })
@@ -78,7 +92,8 @@ export const {
     useAddTodoMutation,
     useDeleteTodoByIdMutation,
     useFetchTodoByIdQuery,
-    useDeleteTaskMutation
+    useDeleteTaskMutation,
+    useUpdateTaskMutation,
 } = todoApi
 
 
